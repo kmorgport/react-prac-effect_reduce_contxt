@@ -3,6 +3,7 @@ import React, { useState, useEffect, useReducer } from 'react';
 import Card from '../UI/Card/Card';
 import classes from './Login.module.css';
 import Button from '../UI/Button/Button';
+import AuthContext from '../../store/auth-context';
 
 //reducer function can be located outside of the component function
 const emailReducer = (state, action) =>{
@@ -15,15 +16,15 @@ const emailReducer = (state, action) =>{
   return {value:'', isValid: false}
 }
 
-const passwordReducer = (state, action) =>{
+const passwordReducer = (state, action) => {
   if(action.type === 'USER_INPUT') {
-    return {value: action.val, isValid: action.val.length > 6}
+    return {value: action.val, isValid: action.val.trim().length > 6}
   }
   if(action.type === 'INPUT_BLUR'){
-    return { value: state.value, isValid: state.value.length > 6}
+    return { value: state.value, isValid: state.value.trim().length > 6}
   }
-  return {value:'', isValid: false}
-}
+  return {value:'', isValid: false};
+};
 
 const Login = (props) => {
   // const [enteredEmail, setEnteredEmail] = useState('');
@@ -39,8 +40,10 @@ const Login = (props) => {
 
   const [passwordState, dispatchPassword] = useReducer(passwordReducer,{
     value: '',
-    isValid: null
-  })
+    isValid: null,
+  });
+
+  const authCtx = useContext(AuthContext)
 
   const { isValid: emailIsValid } = emailState;
   const { isValid: passwordIsValid }= passwordState
@@ -88,7 +91,7 @@ const Login = (props) => {
 
   const passwordChangeHandler = (event) => {
     // setEnteredPassword(event.target.value);
-    dispatchPassword({type: 'USER_INPUT', value: event.target.value})
+    dispatchPassword({type: 'USER_INPUT', val: event.target.value})
 
     // setFormIsValid(
     //   emailState.isValid && event.target.value.trim().length > 6
@@ -109,7 +112,7 @@ const Login = (props) => {
 
   const submitHandler = (event) => {
     event.preventDefault();
-    props.onLogin(emailState.value, passwordState.value);
+    authCtx.onLogin(emailState.value, passwordState.value);
   };
 
   return (
