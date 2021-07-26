@@ -32,4 +32,4 @@ const AuthContextProvider = (props) =>{
     >{props.children}</AuthContext.Provider>
 }
 
-export default AuthContext;
+export default AuthContextProvider;
